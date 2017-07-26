@@ -1,0 +1,26 @@
+{
+  "_comment":
+  [
+    "Craft a Solar Furnace from a solar cell"
+  ],
+  "pattern": [
+    "csc",
+    "cic",
+    "ccc"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "s": {
+      "item": "simplelife:solarcellitem"
+    },
+    "i": {
+      "item": "minecraft:iron_block"
+    },
+    "c": {
+      "item": "minecraft:cobblestone"
+    }
+  },
+  "result": {
+    "item": "simplelife:solarfurnaceblock"
+  }
+}

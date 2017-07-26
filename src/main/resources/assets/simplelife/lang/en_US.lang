@@ -1,0 +1,11 @@
+tile.simplelife.solarfurnaceblock.name=Solar Furnace
+
+item.simplelife.manualitem.name=Simple Life Manual
+item.simplelife.solarcellitem.name=Solar Cell
+item.simplelife.solarcellupgrade1item.name=Solar Cell Upgrade 1
+item.simplelife.solarcellupgrade2item.name=Solar Cell Upgrade 2
+
+itemGroup.SimpleLife=Simple Life Items And Blocks
+
+key.categories.simplelife=Simple Life
+key.tutorial=Tutorial Key

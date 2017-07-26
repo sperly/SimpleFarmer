@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "simplelife:solarcellitem"
+  },
+  "pattern": [
+    "grg",
+    "grg",
+    "ooo"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "g": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "o": {
+      "item": "minecraft:stone",
+      "data": 0
+    }
+  }
+}

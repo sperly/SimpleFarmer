@@ -1,0 +1,32 @@
+{
+  "_comment":
+  [
+    "Craft the Solar Cell Upgrade 2"
+  ],
+  "pattern":
+  [
+    "grg",
+    "grg",
+    "ooo"
+  ],
+  "type": "forge:ore_shaped",
+  "key":
+  {
+    "g":
+    {
+      "item": "minecraft:glowstone"
+    },
+    "r":
+    {
+      "item": "minecraft:diamond_block"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "simplelife:solarcellupgrade2item"
+  }
+}

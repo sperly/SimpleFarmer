@@ -1,0 +1,16 @@
+[
+{
+  "modid": "simplelife",
+  "name": "Simple Life",
+  "description": "Early game machines with extensive upgrade capabilities.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["sperly"],
+  "credits": "McJty, for making a very good example.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
