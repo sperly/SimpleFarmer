@@ -1,5 +1,6 @@
 package net.sperly.simplelife;
 
+import net.sperly.simplelife.helpers.GrinderRecipes;
 import net.sperly.simplelife.proxy.CommonProxy;
 import net.sperly.simplelife.commands.TeleportCommand;
 
@@ -25,6 +26,7 @@ public class SimpleLife
 
     @Mod.Instance
     public static SimpleLife instance;
+    public static GrinderRecipes gRecipes = new GrinderRecipes();
 
     public static Logger logger;
 

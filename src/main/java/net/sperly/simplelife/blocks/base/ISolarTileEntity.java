@@ -22,8 +22,8 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     public static final int INPUT_SLOT = 1;
     public static final int[] OUTPUT_SLOTS = {2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-    protected static int solarUpgradeLevel = 0;
-    protected static boolean isWorking = false;
+    protected int solarUpgradeLevel = 0;
+    protected boolean isWorking = false;
 
     // This item handler will hold our nine inventory slots
     protected ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE)
@@ -31,22 +31,7 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         @Override
         protected void onContentsChanged(int slot)
         {
-            // We need to tell the tile entity that something has changed so
-            // that the chest contents is persisted
-            if (!itemStackHandler.getStackInSlot(UPGRADE_SLOTS[0]).isEmpty())
-            {
-                Item upgrades = itemStackHandler.getStackInSlot(UPGRADE_SLOTS[0]).getItem();
-                if (upgrades instanceof SolarCellUpgrade1Item)
-                    solarUpgradeLevel = 1;
-                else if (upgrades instanceof SolarCellUpgrade2Item)
-                    solarUpgradeLevel = 2;
-                else
-                    solarUpgradeLevel = 0;
-            }
-            else
-                solarUpgradeLevel = 0;
-
-            ISolarTileEntity.super.markDirty();
+            checkUpgradeSlot();
         }
     };
 
@@ -58,6 +43,7 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         {
             itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
         }
+        this.checkUpgradeSlot();
     }
 
     @Override
@@ -125,6 +111,26 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         }
     }
 
+    public void checkUpgradeSlot()
+    {
+        // We need to tell the tile entity that something has changed so
+        // that the chest contents is persisted
+        if (!itemStackHandler.getStackInSlot(UPGRADE_SLOTS[0]).isEmpty())
+        {
+            Item upgrades = itemStackHandler.getStackInSlot(UPGRADE_SLOTS[0]).getItem();
+            if (upgrades instanceof SolarCellUpgrade1Item)
+                solarUpgradeLevel = 1;
+            else if (upgrades instanceof SolarCellUpgrade2Item)
+                solarUpgradeLevel = 2;
+            else
+                solarUpgradeLevel = 0;
+        }
+        else
+            solarUpgradeLevel = 0;
+
+        markDirty();
+    }
+
     protected int getFirstAvailableOutputSlot()
     {
         for (int slot : OUTPUT_SLOTS)
@@ -133,6 +139,41 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
                 return slot;
         }
         return -1;
+    }
+
+    protected int mergeStacksInInventory(ItemStack inStack)
+    {
+        int restCount = -1;
+
+        int slot = OUTPUT_SLOTS[0];
+        while(!inStack.isEmpty() && slot <= OUTPUT_SLOTS[8]) {
+            ItemStack toStack = itemStackHandler.getStackInSlot(slot);
+            if(toStack == ItemStack.EMPTY)
+            {
+                itemStackHandler.setStackInSlot(slot, inStack);
+                inStack = ItemStack.EMPTY;
+                restCount = 0;
+            }
+            else if(toStack.getItem() == inStack.getItem() && toStack.getCount() + inStack.getCount() <= 64)
+            {
+                toStack.setCount(toStack.getCount() + inStack.getCount());
+                itemStackHandler.setStackInSlot(slot, toStack);
+                inStack = ItemStack.EMPTY;
+                restCount = 0;
+            }
+            else if(toStack.getItem() == inStack.getItem())
+            {
+                int rest = 64 - toStack.getCount();
+                toStack.setCount(64);
+                inStack.setCount(inStack.getCount() - rest);
+            }
+            ++slot;
+        }
+
+        if(inStack.getCount() > 0)
+            restCount = inStack.getCount();
+
+        return restCount;
     }
 
     @Override
@@ -192,8 +233,8 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack)
     {
-        if (!itemStack.isEmpty() && itemStack.getCount() > getInventoryStackLimit()) {  // isEmpty();  getStackSize()
-            itemStack.setCount(getInventoryStackLimit());  //setStackSize()
+        if (!itemStack.isEmpty() && itemStack.getCount() > getInventoryStackLimit()) {
+            itemStack.setCount(getInventoryStackLimit(slot));
         }
         itemStackHandler.setStackInSlot(slot, itemStack);
         markDirty();
@@ -203,6 +244,13 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     public int getInventoryStackLimit()
     {
         return 64;
+    }
+
+    public int getInventoryStackLimit(int slot)
+    {
+        if(slot == UPGRADE_SLOTS[0])
+            return 1;
+        else return 64;
     }
 
     @Override

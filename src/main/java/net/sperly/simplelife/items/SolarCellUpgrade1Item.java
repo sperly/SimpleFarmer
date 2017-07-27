@@ -13,6 +13,7 @@ public class SolarCellUpgrade1Item extends Item
         setRegistryName("solarcellupgrade1item");
         setUnlocalizedName(SimpleLife.MODID + ".solarcellupgrade1item");
         setCreativeTab(SimpleLife.tabSimpleLife);
+        setMaxStackSize(1);
     }
 
     @SideOnly(Side.CLIENT)

@@ -1,19 +1,12 @@
-package net.sperly.simplelife.blocks.solarfurnace;
+package net.sperly.simplelife.blocks.solargrinder;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 import net.sperly.simplelife.blocks.base.ISolarTileEntity;
+import net.sperly.simplelife.helpers.GrinderRecipes;
 
-public class SolarFurnaceTileEntity extends ISolarTileEntity
+public class SolarGrinderTileEntity extends ISolarTileEntity
 {
-    private static int smeltTime = 0;
-
-    public SolarFurnaceTileEntity()
-    {
-        this.checkUpgradeSlot();
-    }
-
     @Override
     public void update()
     {
@@ -23,11 +16,11 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
         {
             if (itemStackHandler.getStackInSlot(INPUT_SLOT).getCount() > 0)
             {
-                if (FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0)
+                if (GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0)
                 {
-                    ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
-                    smeltedItems.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount());
-                    int rest = mergeStacksInInventory(smeltedItems);
+                    ItemStack grindedItems = GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
+                    grindedItems.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount());
+                    int rest = mergeStacksInInventory(grindedItems);
                     if(rest > 0)
                     {
                         ItemStack restStack = itemStackHandler.getStackInSlot(INPUT_SLOT);
@@ -39,7 +32,6 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
                         itemStackHandler.setStackInSlot(INPUT_SLOT, ItemStack.EMPTY);
                     }
                     markDirty();
-
                 }
             }
         }

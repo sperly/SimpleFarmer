@@ -1,9 +1,12 @@
 tile.simplelife.solarfurnaceblock.name=Solar Furnace
+tile.simplelife.solargrinderblock.name=Solar Grinder
+tile.simplelife.solarharvesterblock.name=Solar Harvester
 
 item.simplelife.manualitem.name=Simple Life Manual
 item.simplelife.solarcellitem.name=Solar Cell
 item.simplelife.solarcellupgrade1item.name=Solar Cell Upgrade 1
 item.simplelife.solarcellupgrade2item.name=Solar Cell Upgrade 2
+item.simplelife.irondustitem.name=Iron Dust
 
 itemGroup.SimpleLife=Simple Life Items And Blocks
 

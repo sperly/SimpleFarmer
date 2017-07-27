@@ -1,13 +1,17 @@
 package net.sperly.simplelife.proxy;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.sperly.simplelife.*;
 //import net.sperly.simplelife.items.FirstItem;
+import net.sperly.simplelife.helpers.*;
 import net.sperly.simplelife.compat.MainCompatHandler;
 import net.sperly.simplelife.network.PacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,5 +70,12 @@ public class CommonProxy {
 
         //Register Blocks items
         SimpleLifeBlocks.registerBlockItems(event);
+
+        //Register Grinding Recipes
+        GrinderRecipes.instance().addGrindingRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(Item.getByNameOrId("simplelife:irondustitem")));
+
+        //Register smelting recipes
+        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(Item.getByNameOrId("simplelife:irondustitem")), new ItemStack(Items.IRON_INGOT), 0.1F);
     }
+
 }

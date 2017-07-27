@@ -1,11 +1,11 @@
 {
   "_comment":
   [
-    "Craft a Solar Furnace"
+    "Craft a Solar Grinder"
   ],
   "pattern": [
     "csc",
-    "cfc",
+    "cpc",
     "cic"
   ],
   "type": "forge:ore_shaped",
@@ -16,14 +16,14 @@
     "i": {
       "item": "minecraft:iron_block"
     },
-    "f": {
-      "item": "minecraft:furnace"
+    "p": {
+      "item": "minecraft:stone_pickaxe"
     },
     "c": {
       "item": "minecraft:cobblestone"
     }
   },
   "result": {
-    "item": "simplelife:solarfurnaceblock"
+    "item": "simplelife:solargrinderblock"
   }
 }

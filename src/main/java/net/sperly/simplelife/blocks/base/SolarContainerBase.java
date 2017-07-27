@@ -12,6 +12,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import net.sperly.simplelife.blocks.solarfurnace.SolarFurnaceTileEntity;
+import net.sperly.simplelife.blocks.solargrinder.SolarGrinderTileEntity;
+import net.sperly.simplelife.helpers.GrinderRecipes;
 import net.sperly.simplelife.items.SolarCellUpgrade1Item;
 import net.sperly.simplelife.items.SolarCellUpgrade2Item;
 
@@ -78,22 +80,36 @@ public class SolarContainerBase extends Container
                     return ItemStack.EMPTY;  //EMPTY_ITEM;
                 }
             }
+
+            int n = GrinderRecipes.instance().getGrindingResult(sourceStack).getCount();
+            if (n > 0 && (ste instanceof SolarGrinderTileEntity)){
+                if (!mergeItemStack(sourceStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false)){
+                    return ItemStack.EMPTY;  //EMPTY_ITEM;
+                }
+            }
+
             // If items are of upgrade type, try putting it i the upgrade slot.
             else if ((sourceStack.getItem() instanceof SolarCellUpgrade1Item) || (sourceStack.getItem() instanceof SolarCellUpgrade2Item)) {
                 if (!mergeItemStack(sourceStack, FIRST_UPGRADE_SLOT_INDEX, FIRST_UPGRADE_SLOT_INDEX + UPGRADE_SLOTS_COUNT, true)) {
                     // Setting the boolean to true places the stack in the bottom slot first
                     return ItemStack.EMPTY;  //EMPTY_ITEM;
                 }
-            }	else {
+                ste.checkUpgradeSlot();
+            }
+            else {
                 return ItemStack.EMPTY;  //EMPTY_ITEM;
             }
-        } else if (sourceSlotIndex >= FIRST_UPGRADE_SLOT_INDEX && sourceSlotIndex < FIRST_UPGRADE_SLOT_INDEX + MACHINE_SLOTS_COUNT) {
+
+        }
+        else if (sourceSlotIndex >= FIRST_UPGRADE_SLOT_INDEX && sourceSlotIndex < FIRST_UPGRADE_SLOT_INDEX + MACHINE_SLOTS_COUNT) {
             // This is a furnace slot so merge the stack into the players inventory: try the hotbar first and then the main inventory
             //   because the main inventory slots are immediately after the hotbar slots, we can just merge with a single call
             if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;  //EMPTY_ITEM;
             }
-        } else {
+            ste.checkUpgradeSlot();
+        }
+        else {
             System.err.print("Invalid slotIndex:" + sourceSlotIndex);
             return ItemStack.EMPTY;  //EMPTY_ITEM;
         }
@@ -177,14 +193,12 @@ public class SolarContainerBase extends Container
         y = 45;
         if(ste instanceof SolarFurnaceTileEntity)
         {
-            {
-                addSlotToContainer(new SolarFurnaceInputSlot(itemHandler, slotIndex, x, y));
-            }
+            addSlotToContainer(new SolarFurnaceInputSlot(itemHandler, slotIndex, x, y));
         }
-        //else if(ste instanceof SolarGrinderTileEntity)
-        //{
-        //    addSlotToContainer(new SolarGrinderInputSlot(itemHandler, slotIndex, x, y));
-        //}
+        else if(ste instanceof SolarGrinderTileEntity)
+        {
+            addSlotToContainer(new SolarGrinderInputSlot(itemHandler, slotIndex, x, y));
+        }
         //else if(ste instanceof SolarHarvesterTileEntity)
         //{
         //    addSlotToContainer(new SolarHarvesterFertilizerSlot(itemHandler, slotIndex, x, y));

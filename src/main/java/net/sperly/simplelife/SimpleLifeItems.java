@@ -1,13 +1,13 @@
 package net.sperly.simplelife;
 
-import net.sperly.simplelife.items.ManualItem;
-import net.sperly.simplelife.items.*;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.sperly.simplelife.items.*;
 
 public class SimpleLifeItems {
 
@@ -23,11 +23,15 @@ public class SimpleLifeItems {
     @GameRegistry.ObjectHolder("simplelife:solarcellupgrade2item")
     public static SolarCellUpgrade2Item solarCellUpgrade2Item;
 
+    @GameRegistry.ObjectHolder("simplelife:irondustitem")
+    public static IronDustItem ironDustItem;
+
     public static void initModels() {
         manualItem.initModel();
         solarCellItem.initModel();
         solarCellUpgrade1Item.initModel();
         solarCellUpgrade2Item.initModel();
+        ironDustItem.initModel();
     }
 
     public static void registerItems(RegistryEvent.Register<Item> event)
@@ -36,5 +40,6 @@ public class SimpleLifeItems {
         event.getRegistry().register(new SolarCellItem());
         event.getRegistry().register(new SolarCellUpgrade1Item());
         event.getRegistry().register(new SolarCellUpgrade2Item());
+        event.getRegistry().register(new IronDustItem());
     }
 }

@@ -1,19 +1,24 @@
 package net.sperly.simplelife.items;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sperly.simplelife.SimpleLife;
 
-public class SolarCellUpgrade2Item extends Item
+public class IronDustItem extends Item
 {
-    public SolarCellUpgrade2Item() {
-        setRegistryName("solarcellupgrade2item");
-        setUnlocalizedName(SimpleLife.MODID + ".solarcellupgrade2item");
+    public IronDustItem() {
+        setRegistryName("irondustitem");
+        setUnlocalizedName(SimpleLife.MODID + ".irondustitem");
         setCreativeTab(SimpleLife.tabSimpleLife);
-        setMaxStackSize(1);
     }
 
     @SideOnly(Side.CLIENT)

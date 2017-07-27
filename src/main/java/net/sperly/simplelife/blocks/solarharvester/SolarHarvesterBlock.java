@@ -1,4 +1,4 @@
-package net.sperly.simplelife.blocks.solarfurnace;
+package net.sperly.simplelife.blocks.solarharvester;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -42,15 +42,15 @@ import static mcjty.theoneprobe.api.IProbeInfo.STARTLOC;
 
 import javax.annotation.Nullable;
 
-public class SolarFurnaceBlock extends Block implements ITileEntityProvider, TOPInfoProvider {
+public class SolarHarvesterBlock extends Block implements ITileEntityProvider, TOPInfoProvider {
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool ENABLED = PropertyBool.create("enabled");
     public static final int GUI_ID = 1;
 
-    public SolarFurnaceBlock() {
+    public SolarHarvesterBlock() {
         super(Material.ROCK);
-        setUnlocalizedName(SimpleLife.MODID + ".solarfurnaceblock");
-        setRegistryName("solarfurnaceblock");
+        setUnlocalizedName(SimpleLife.MODID + ".solarharvesterblock");
+        setRegistryName("solarharvesterblock");
         setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         setCreativeTab(SimpleLife.tabSimpleLife);
     }
@@ -63,9 +63,8 @@ public class SolarFurnaceBlock extends Block implements ITileEntityProvider, TOP
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
         TileEntity te = world.getTileEntity(data.getPos());
-        if (te instanceof SolarFurnaceTileEntity) {
-            SolarFurnaceTileEntity dataTileEntity = (SolarFurnaceTileEntity) te;
-            dataTileEntity.checkUpgradeSlot();
+        if (te instanceof SolarHarvesterTileEntity) {
+            SolarHarvesterTileEntity dataTileEntity = (SolarHarvesterTileEntity) te;
             int level = dataTileEntity.getUpgradeLevel() + 1;
             probeInfo.text(TextFormatting.GREEN + STARTLOC + "Tier " + level +ENDLOC);
             boolean working = dataTileEntity.hasEnoughSun();
@@ -86,7 +85,7 @@ public class SolarFurnaceBlock extends Block implements ITileEntityProvider, TOP
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof SolarFurnaceTileEntity) {
+        if (tileEntity instanceof SolarHarvesterTileEntity) {
             InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileEntity);
         }
 
@@ -123,7 +122,7 @@ public class SolarFurnaceBlock extends Block implements ITileEntityProvider, TOP
             return true;
         }
         TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof SolarFurnaceTileEntity))
+        if (!(te instanceof SolarHarvesterTileEntity))
         {
             return false;
         }
@@ -133,6 +132,6 @@ public class SolarFurnaceBlock extends Block implements ITileEntityProvider, TOP
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new SolarFurnaceTileEntity();
+        return new SolarHarvesterTileEntity();
     }
 }

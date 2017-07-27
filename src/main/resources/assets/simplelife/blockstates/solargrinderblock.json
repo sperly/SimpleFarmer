@@ -1,0 +1,29 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "simplelife:solargrinderblock",
+    "textures":
+    {
+      "front": "simplelife:blocks/solargrinder_front_off"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing":
+    {
+      "north": {},
+      "south": {"y": 180},
+      "west": {"y": 270},
+      "east": {"y": 90}
+    },
+    "enabled": {
+      "false": {},
+      "true": {
+        "textures": {
+          "front": "simplelife:blocks/solargrinder_front_on"
+        }
+      }
+    }
+  }
+}
