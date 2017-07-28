@@ -35,10 +35,8 @@ public class GuiProxy implements IGuiHandler {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         TileEntity te = world.getTileEntity(pos);
-
         if (te instanceof SolarFurnaceTileEntity) {
-            SolarFurnaceTileEntity containerTileEntity = (SolarFurnaceTileEntity) te;
-            return new SolarFurnaceGui(containerTileEntity, new SolarContainerBase(player.inventory, containerTileEntity));
+            return new SolarFurnaceGui((SolarFurnaceTileEntity) te, new SolarContainerBase(player.inventory, (SolarFurnaceTileEntity) te));
         }
         else if (te instanceof SolarGrinderTileEntity) {
             SolarGrinderTileEntity containerTileEntity = (SolarGrinderTileEntity) te;

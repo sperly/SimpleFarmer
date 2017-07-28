@@ -8,11 +8,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.sperly.simplelife.items.SolarCellUpgrade1Item;
 import net.sperly.simplelife.items.SolarCellUpgrade2Item;
+
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class ISolarTileEntity extends TileEntity implements ITickable, IInventory
 {
@@ -24,6 +30,9 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
 
     protected int solarUpgradeLevel = 0;
     protected boolean isWorking = false;
+    protected int workTime = 0;
+    protected int workTimeRemaining = 0;
+    private static final short WORK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
 
     // This item handler will hold our nine inventory slots
     protected ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE)
@@ -68,6 +77,12 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     {
         // If we are too far away from this tile entity you cannot use it
         return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
+    }
+
+    public double fractionOfWorkTimeComplete()
+    {
+        double fraction = (double)this.workTimeRemaining / (double)(this.workTime);
+        return MathHelper.clamp(fraction, 0.0, 1.0);
     }
 
     @Override
@@ -128,17 +143,8 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         else
             solarUpgradeLevel = 0;
 
+        workTime = WORK_TIME_FOR_COMPLETION - (solarUpgradeLevel * 50);
         markDirty();
-    }
-
-    protected int getFirstAvailableOutputSlot()
-    {
-        for (int slot : OUTPUT_SLOTS)
-        {
-            if (itemStackHandler.getStackInSlot(slot).getCount() == 0)
-                return slot;
-        }
-        return -1;
     }
 
     protected int mergeStacksInInventory(ItemStack inStack)
@@ -279,22 +285,33 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         return false;
     }
 
+    private static final byte WORKTIME_FIELD_ID = 0;
+    private static final byte WORKTIME_REMAINING_FIELD_ID = 1;
+    private static final byte NUMBER_OF_FIELDS = 2;
+
     @Override
-    public int getField(int i)
-    {
+    public int getField(int id) {
+        if (id == WORKTIME_FIELD_ID) return workTime;
+        else if (id == WORKTIME_REMAINING_FIELD_ID) return workTimeRemaining;
+        System.err.println("Invalid field ID in TileInventorySmelting.getField:" + id);
         return 0;
     }
 
     @Override
-    public void setField(int i, int i1)
+    public void setField(int id, int value)
     {
-
+        if (id == WORKTIME_FIELD_ID) {
+            workTime = value;
+        } else if (id == WORKTIME_REMAINING_FIELD_ID) {
+            workTimeRemaining = value;
+        } else {
+            System.err.println("Invalid field ID in TileInventorySmelting.setField:" + id);
+        }
     }
 
     @Override
-    public int getFieldCount()
-    {
-        return 0;
+    public int getFieldCount() {
+        return NUMBER_OF_FIELDS;
     }
 
     @Override
@@ -306,7 +323,7 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     @Override
     public String getName()
     {
-        return null;
+        return "Inget alls";
     }
 
     @Override

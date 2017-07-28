@@ -7,8 +7,6 @@ import net.sperly.simplelife.blocks.base.ISolarTileEntity;
 
 public class SolarFurnaceTileEntity extends ISolarTileEntity
 {
-    private static int smeltTime = 0;
-
     public SolarFurnaceTileEntity()
     {
         this.checkUpgradeSlot();
@@ -25,7 +23,15 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
             {
                 if (FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0)
                 {
-                    ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
+                    if(this.workTimeRemaining == 0)
+                    {
+                        this.workTimeRemaining = this.workTime;
+                    }
+                    else
+                    {
+                        this.workTimeRemaining -= 1;
+                    }
+                    /*ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
                     smeltedItems.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount());
                     int rest = mergeStacksInInventory(smeltedItems);
                     if(rest > 0)
@@ -37,7 +43,7 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
                     else if (rest == 0)
                     {
                         itemStackHandler.setStackInSlot(INPUT_SLOT, ItemStack.EMPTY);
-                    }
+                    }*/
                     markDirty();
 
                 }
