@@ -23,9 +23,12 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
             {
                 if (FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0)
                 {
+
                     if(this.workTimeRemaining == 0)
                     {
-                        this.workTimeRemaining = this.workTime;
+                        if(moveOneItemToOutput())
+                            this.workTimeRemaining = this.workTime;
+
                     }
                     else
                     {
@@ -48,6 +51,25 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
 
                 }
             }
+            else
+            {
+                workTimeRemaining = workTime;
+            }
         }
+    }
+
+    private boolean moveOneItemToOutput()
+    {
+        ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
+        smeltedItems.setCount(1);
+        int rest = mergeStacksInInventory(smeltedItems);
+        if (rest == 0)
+        {
+            ItemStack restStack = itemStackHandler.getStackInSlot(INPUT_SLOT);
+            restStack.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount() - 1);
+            itemStackHandler.setStackInSlot(INPUT_SLOT, restStack);
+            return true;
+        }
+        return false;
     }
 }

@@ -7,6 +7,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -70,6 +72,8 @@ public class SolarContainerBase extends Container
         if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getStack();
         ItemStack copyOfSourceStack = sourceStack.copy();
+
+
 
         // Check if the slot clicked is one of the vanilla container slots
         if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
@@ -147,10 +151,17 @@ public class SolarContainerBase extends Container
             for (int fieldID = 0; fieldID < ste.getFieldCount(); ++fieldID) {
                 if (fieldHasChanged[fieldID]) {
                     // Note that although sendProgressBarUpdate takes 2 ints on a server these are truncated to shorts
-                    //listener.  .sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
+                    listener.sendWindowProperty(this, fieldID, cachedFields[fieldID]);
+                    //listener.sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
                 }
             }
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void updateProgressBar(int id, int data) {
+        ste.setField(id, data);
     }
 
     private void addPlayerSlots(IInventory playerInventory) {

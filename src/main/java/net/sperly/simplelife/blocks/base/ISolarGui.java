@@ -18,13 +18,13 @@ public abstract class ISolarGui extends GuiContainer {
     public static final int WIDTH = 180;
     public static final int HEIGHT = 152;
 
-    private TileEntity te;
+    private ISolarTileEntity te;
 
     private static ResourceLocation background =  new ResourceLocation(SimpleLife.MODID, "textures/gui/nogui.png");
 
     public ISolarGui(ISolarTileEntity tileEntity, SolarContainerBase container, String TextureLocation) {
         super(container);
-        background = new ResourceLocation(SimpleLife.MODID, "textures/gui/solarfurnacegui.png");
+        background = new ResourceLocation(SimpleLife.MODID, TextureLocation);
         te = tileEntity;
 
         xSize = WIDTH;
@@ -33,8 +33,8 @@ public abstract class ISolarGui extends GuiContainer {
 
     final int  WORK_BAR_XPOS = 100;
     final int WORK_BAR_YPOS = 45;
-    final int WORK_BAR_ICON_U = 0;   // texture position of white arrow icon
-    final int WORK_BAR_ICON_V = 180;
+    final int WORK_BAR_ICON_U = 180;   // texture position of white arrow icon
+    final int WORK_BAR_ICON_V = 0;
     final int WORK_BAR_WIDTH = 16;
     final int WORK_BAR_HEIGHT = 16;
 
@@ -46,7 +46,7 @@ public abstract class ISolarGui extends GuiContainer {
         double cookProgress = 0;
         if(te instanceof SolarFurnaceTileEntity)
         {
-            cookProgress = ((SolarFurnaceTileEntity)te).fractionOfWorkTimeComplete();
+            cookProgress = te.fractionOfWorkTimeComplete();
         }
 
         // draw the cook progress bar
@@ -61,14 +61,14 @@ public abstract class ISolarGui extends GuiContainer {
         final int LABEL_XPOS = 5;
         final int LABEL_YPOS = 5;
 
-        this.fontRenderer.drawString("Inget här!!", LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());
+        this.fontRenderer.drawString("Text here...", LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());
 
-        List<String> hoveringText = new ArrayList<String>();
+        java.util.List<String> hoveringText = new ArrayList<String>();
 
         // If the mouse is over the progress bar add the progress bar hovering text
         if (isInRect(guiLeft + WORK_BAR_XPOS, guiTop + WORK_BAR_YPOS, WORK_BAR_WIDTH, WORK_BAR_HEIGHT, mouseX, mouseY)){
             hoveringText.add("Progress:");
-            int cookPercentage =(int)(((ISolarTileEntity)te).fractionOfWorkTimeComplete() * 100);
+            int cookPercentage =(int)(te.fractionOfWorkTimeComplete() * 100);
             hoveringText.add(cookPercentage + "%");
         }
 

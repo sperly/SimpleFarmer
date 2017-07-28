@@ -81,7 +81,7 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
 
     public double fractionOfWorkTimeComplete()
     {
-        double fraction = (double)this.workTimeRemaining / (double)(this.workTime);
+        double fraction = 1.0 - (double)this.workTimeRemaining / (double)(this.workTime);
         return MathHelper.clamp(fraction, 0.0, 1.0);
     }
 
