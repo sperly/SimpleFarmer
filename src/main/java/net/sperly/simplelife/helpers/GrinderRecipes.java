@@ -38,6 +38,7 @@ public class GrinderRecipes {
             FMLLog.log.info("Ignored smelting recipe with conflicting input: {} = {}", inStack, resultStack);
         }
         else {
+            //resultStack.setCount(resultCount);
             this.grindingList.put(inStack, resultStack);
         }
     }

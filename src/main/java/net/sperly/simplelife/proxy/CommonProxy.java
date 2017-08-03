@@ -72,7 +72,10 @@ public class CommonProxy {
         SimpleLifeBlocks.registerBlockItems(event);
 
         //Register Grinding Recipes
-        GrinderRecipes.instance().addGrindingRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(Item.getByNameOrId("simplelife:irondustitem")));
+
+        GrinderRecipes.instance().addGrindingRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(Item.getByNameOrId("simplelife:irondustitem"), 2));
+        GrinderRecipes.instance().addGrindingRecipe(new ItemStack(Blocks.COAL_ORE), new ItemStack(Items.COAL, 2));
+        GrinderRecipes.instance().addGrindingRecipe(new ItemStack(Blocks.LAPIS_ORE), new ItemStack(Items.DYE, 2, 4));
 
         //Register smelting recipes
         FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(Item.getByNameOrId("simplelife:irondustitem")), new ItemStack(Items.IRON_INGOT), 0.1F);

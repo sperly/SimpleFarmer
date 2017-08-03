@@ -1,17 +1,14 @@
 package net.sperly.simplelife.blocks.base;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sperly.simplelife.SimpleLife;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.ResourceLocation;
-import net.sperly.simplelife.blocks.solarfurnace.SolarFurnaceTileEntity;
+import net.minecraft.util.ResourceLocation;;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public abstract class ISolarGui extends GuiContainer {
@@ -44,10 +41,9 @@ public abstract class ISolarGui extends GuiContainer {
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         double cookProgress = 0;
-        if(te instanceof SolarFurnaceTileEntity)
-        {
+
             cookProgress = te.fractionOfWorkTimeComplete();
-        }
+
 
         // draw the cook progress bar
         drawTexturedModalRect(guiLeft +  WORK_BAR_XPOS, guiTop + WORK_BAR_YPOS, WORK_BAR_ICON_U, WORK_BAR_ICON_V,
@@ -61,7 +57,7 @@ public abstract class ISolarGui extends GuiContainer {
         final int LABEL_XPOS = 5;
         final int LABEL_YPOS = 5;
 
-        this.fontRenderer.drawString("Text here...", LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());
+        this.fontRenderer.drawString(te.getName(), LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());
 
         java.util.List<String> hoveringText = new ArrayList<String>();
 

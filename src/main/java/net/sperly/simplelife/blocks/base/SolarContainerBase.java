@@ -68,8 +68,8 @@ public class SolarContainerBase extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
     {
-        Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
-        if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
+        if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;
         ItemStack sourceStack = sourceSlot.getStack();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
@@ -77,31 +77,32 @@ public class SolarContainerBase extends Container
 
         // Check if the slot clicked is one of the vanilla container slots
         if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
-            // This is a vanilla container slot so merge the stack into one of the furnace slots
+
             // If the stack is smeltable and it is a SolarFurnace, try to merge merge the stack into the input slots.
-            if (FurnaceRecipes.instance().getSmeltingResult(sourceStack).getCount() > 0 && (ste instanceof SolarFurnaceTileEntity)){  //isEmptyItem
+            if (FurnaceRecipes.instance().getSmeltingResult(sourceStack).getCount() > 0 && (ste instanceof SolarFurnaceTileEntity)){
                 if (!mergeItemStack(sourceStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false)){
-                    return ItemStack.EMPTY;  //EMPTY_ITEM;
+                    return ItemStack.EMPTY;
                 }
             }
 
-            int n = GrinderRecipes.instance().getGrindingResult(sourceStack).getCount();
-            if (n > 0 && (ste instanceof SolarGrinderTileEntity)){
+            //If item is grindable and the block is a grinder.
+            if (GrinderRecipes.instance().getGrindingResult(sourceStack).getCount() > 0 && (ste instanceof SolarGrinderTileEntity)){
                 if (!mergeItemStack(sourceStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false)){
-                    return ItemStack.EMPTY;  //EMPTY_ITEM;
+                    return ItemStack.EMPTY;
                 }
             }
+
+            //If Item is fertilizer and the block is a Harvester.
 
             // If items are of upgrade type, try putting it i the upgrade slot.
             else if ((sourceStack.getItem() instanceof SolarCellUpgrade1Item) || (sourceStack.getItem() instanceof SolarCellUpgrade2Item)) {
                 if (!mergeItemStack(sourceStack, FIRST_UPGRADE_SLOT_INDEX, FIRST_UPGRADE_SLOT_INDEX + UPGRADE_SLOTS_COUNT, true)) {
-                    // Setting the boolean to true places the stack in the bottom slot first
-                    return ItemStack.EMPTY;  //EMPTY_ITEM;
+                    return ItemStack.EMPTY;
                 }
                 ste.checkUpgradeSlot();
             }
             else {
-                return ItemStack.EMPTY;  //EMPTY_ITEM;
+                return ItemStack.EMPTY;
             }
 
         }
@@ -109,13 +110,13 @@ public class SolarContainerBase extends Container
             // This is a furnace slot so merge the stack into the players inventory: try the hotbar first and then the main inventory
             //   because the main inventory slots are immediately after the hotbar slots, we can just merge with a single call
             if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;  //EMPTY_ITEM;
+                return ItemStack.EMPTY;
             }
             ste.checkUpgradeSlot();
         }
         else {
             System.err.print("Invalid slotIndex:" + sourceSlotIndex);
-            return ItemStack.EMPTY;  //EMPTY_ITEM;
+            return ItemStack.EMPTY;
         }
 
         // If stack size == 0 (the entire stack was moved) set slot contents to null

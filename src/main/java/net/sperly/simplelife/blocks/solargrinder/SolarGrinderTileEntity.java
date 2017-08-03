@@ -2,11 +2,19 @@ package net.sperly.simplelife.blocks.solargrinder;
 
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.util.EnumFacing;
 import net.sperly.simplelife.blocks.base.ISolarTileEntity;
+import net.sperly.simplelife.blocks.solarfurnace.SolarFurnaceTileEntity;
 import net.sperly.simplelife.helpers.GrinderRecipes;
 
 public class SolarGrinderTileEntity extends ISolarTileEntity
 {
+
+    public SolarGrinderTileEntity()
+    {
+        this.checkUpgradeSlot();
+    }
+
     @Override
     public void update()
     {
@@ -18,22 +26,32 @@ public class SolarGrinderTileEntity extends ISolarTileEntity
             {
                 if (GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0)
                 {
-                    ItemStack grindedItems = GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
-                    grindedItems.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount());
-                    int rest = mergeStacksInInventory(grindedItems);
-                    if(rest > 0)
+                    if(this.workTimeRemaining == 0)
                     {
-                        ItemStack restStack = itemStackHandler.getStackInSlot(INPUT_SLOT);
-                        restStack.setCount(rest);
-                        itemStackHandler.setStackInSlot(INPUT_SLOT, restStack);
+                        if(moveOneItemToOutput())
+                            this.workTimeRemaining = this.workTime;
+
                     }
-                    else if (rest == 0)
+                    else
                     {
-                        itemStackHandler.setStackInSlot(INPUT_SLOT, ItemStack.EMPTY);
+                        if(isWorking)
+                            this.workTimeRemaining -= 1;
                     }
                     markDirty();
                 }
             }
+            else
+            {
+                workTimeRemaining = workTime;
+            }
         }
+    }
+    @Override
+    public boolean canInsertItem(int i, ItemStack itemStack, EnumFacing enumFacing)
+    {
+        if((enumFacing != EnumFacing.DOWN) && (GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0))
+            return true;
+        else
+            return false;
     }
 }

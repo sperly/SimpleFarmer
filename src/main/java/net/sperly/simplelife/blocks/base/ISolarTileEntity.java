@@ -2,8 +2,10 @@ package net.sperly.simplelife.blocks.base;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,13 +16,17 @@ import net.minecraft.util.text.Style;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.sperly.simplelife.blocks.solarfurnace.SolarFurnaceTileEntity;
+import net.sperly.simplelife.blocks.solargrinder.SolarGrinderTileEntity;
+import net.sperly.simplelife.helpers.GrinderRecipes;
 import net.sperly.simplelife.items.SolarCellUpgrade1Item;
 import net.sperly.simplelife.items.SolarCellUpgrade2Item;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ISolarTileEntity extends TileEntity implements ITickable, IInventory
+public abstract class ISolarTileEntity extends TileEntity implements ITickable, ISidedInventory
 {
     public static final int SIZE = 11;
 
@@ -90,7 +96,8 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            return true;
+            if (facing == EnumFacing.UP)
+                return true;
         }
         return super.hasCapability(capability, facing);
     }
@@ -110,12 +117,12 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     {
         if (!getWorld().isRemote)
         {
-            long time = getWorld().getWorldTime();
-            if (((time < 450) || (time > 7700)) && solarUpgradeLevel < 1)
+            long time = getWorld().getWorldTime() % 24000;
+            if (((time < 450) || (time > 7700)) && (solarUpgradeLevel == 0))
             {
                 isWorking = false;
             }
-            else if (((time > 12500) && (time < 23000)) && solarUpgradeLevel < 2)
+            else if (((time > 12500) && (time < 23000)) && solarUpgradeLevel == 1)
             {
                 isWorking = false;
             }
@@ -280,19 +287,24 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemStack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack)
     {
-        return false;
+        if(slot != INPUT_SLOT)
+            return false;
+        else
+            return true;
     }
 
     private static final byte WORKTIME_FIELD_ID = 0;
     private static final byte WORKTIME_REMAINING_FIELD_ID = 1;
-    private static final byte NUMBER_OF_FIELDS = 2;
+    private static final byte UPGRADE_LEVEL_FIELD_ID = 2;
+    private static final byte NUMBER_OF_FIELDS = 3;
 
     @Override
     public int getField(int id) {
         if (id == WORKTIME_FIELD_ID) return workTime;
         else if (id == WORKTIME_REMAINING_FIELD_ID) return workTimeRemaining;
+        else if (id == UPGRADE_LEVEL_FIELD_ID) return solarUpgradeLevel;
         System.err.println("Invalid field ID in TileInventorySmelting.getField:" + id);
         return 0;
     }
@@ -303,6 +315,8 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
         if (id == WORKTIME_FIELD_ID) {
             workTime = value;
         } else if (id == WORKTIME_REMAINING_FIELD_ID) {
+            workTimeRemaining = value;
+        } else if (id == UPGRADE_LEVEL_FIELD_ID) {
             workTimeRemaining = value;
         } else {
             System.err.println("Invalid field ID in TileInventorySmelting.setField:" + id);
@@ -323,12 +337,70 @@ public abstract class ISolarTileEntity extends TileEntity implements ITickable, 
     @Override
     public String getName()
     {
-        return "Inget alls";
+        return this.getBlockType().getLocalizedName();
     }
 
     @Override
     public boolean hasCustomName()
     {
         return false;
+    }
+
+    protected boolean moveOneItemToOutput()
+    {
+        ItemStack workedItems = ItemStack.EMPTY;
+        if (this instanceof SolarFurnaceTileEntity)
+        {
+            workedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
+        }
+        else if (this instanceof SolarGrinderTileEntity)
+        {
+            workedItems = GrinderRecipes.instance().getGrindingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
+        }
+
+        //workedItems.setCount(1);
+        int rest = mergeStacksInInventory(workedItems);
+        if (rest == 0)
+        {
+            ItemStack restStack = itemStackHandler.getStackInSlot(INPUT_SLOT);
+            restStack.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount() - 1);
+            itemStackHandler.setStackInSlot(INPUT_SLOT, restStack);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing enumFacing)
+    {
+        int[] inSlots = { INPUT_SLOT };
+        int[] outSLots = OUTPUT_SLOTS;
+        if(enumFacing != EnumFacing.DOWN)
+            return inSlots;
+        else
+            return outSLots;
+    }
+
+    @Override
+    public boolean canExtractItem(int i, ItemStack itemStack, EnumFacing enumFacing)
+    {
+        if(enumFacing == EnumFacing.DOWN)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStack, EnumFacing facing)
+    {
+        if(!isItemValidForSlot(index, itemStack))
+            return false;
+
+        int[] slots = getSlotsForFace(facing);
+        if(!Arrays.asList(slots).contains(index))
+            return false;
+
+        return true;
+
     }
 }

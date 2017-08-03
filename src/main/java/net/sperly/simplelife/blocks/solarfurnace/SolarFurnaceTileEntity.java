@@ -3,6 +3,7 @@ package net.sperly.simplelife.blocks.solarfurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
+import net.minecraft.util.EnumFacing;
 import net.sperly.simplelife.blocks.base.ISolarTileEntity;
 
 public class SolarFurnaceTileEntity extends ISolarTileEntity
@@ -32,7 +33,8 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
                     }
                     else
                     {
-                        this.workTimeRemaining -= 1;
+                        if(isWorking)
+                            this.workTimeRemaining -= 1;
                     }
                     /*ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
                     smeltedItems.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount());
@@ -58,18 +60,12 @@ public class SolarFurnaceTileEntity extends ISolarTileEntity
         }
     }
 
-    private boolean moveOneItemToOutput()
+    @Override
+    public boolean canInsertItem(int i, ItemStack itemStack, EnumFacing enumFacing)
     {
-        ItemStack smeltedItems = FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).copy();
-        smeltedItems.setCount(1);
-        int rest = mergeStacksInInventory(smeltedItems);
-        if (rest == 0)
-        {
-            ItemStack restStack = itemStackHandler.getStackInSlot(INPUT_SLOT);
-            restStack.setCount(itemStackHandler.getStackInSlot(INPUT_SLOT).getCount() - 1);
-            itemStackHandler.setStackInSlot(INPUT_SLOT, restStack);
+        if((enumFacing != EnumFacing.DOWN) && (FurnaceRecipes.instance().getSmeltingResult(itemStackHandler.getStackInSlot(INPUT_SLOT)).getCount() > 0))
             return true;
-        }
-        return false;
+        else
+            return false;
     }
 }
