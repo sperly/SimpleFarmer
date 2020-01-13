@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public final class ModItemGroups {
 
-
+	public static final ItemGroup MOD_ITEM_GROUP = new ModItemGroup(SolarUtils.MODID, () -> new ItemStack(ModItems.SOLAR_MANUAL));
 
 	public static class ModItemGroup extends ItemGroup {
 
